@@ -40,12 +40,31 @@ function App() {
     </div>
   </div>
 </nav>
-<div className='container'>
-  <div className='row'>
-    <div className='col'>
+<div className='col'> 
       <button className='btn btn-primary' onClick={getTracks}>get Data</button>
       </div>
+<div className='container'>
+  <div className='row'>
+  {
+  tracks.map((element, index) => {
+    return <div  key={element.album.id} className='col'>
+      <div className="card">
+  <img src={element.album.images[0].url}  className="card-img-top" alt="..." />
+  <div className="card-body">
+    <h5 className="card-title">{element.name}</h5>
+    <p className="card-text">
+      Artist:{element.album.artists[0].name}
+    </p>
+     <p className="card-text">
+      Release Date:{element.album.release_date}
+    </p>
+    <audio src={element.preview_url} controls className='w-100'></audio>
   </div>
+</div>
+    </div>;
+  })
+}
+</div>
 </div>
     </>
   );
