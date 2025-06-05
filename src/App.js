@@ -2,9 +2,10 @@ import { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [keyword,setKeyword]=useState("");
   const [tracks,setTracks]=useState([]);
   const getTracks=async()=>{
-    let data=await fetch("https://v1.nocodeapi.com/shaurya0501/spotify/IzsXSgDpXzJfPWGk/search?q=iris&type=track");
+    let data=await fetch(`https://v1.nocodeapi.com/shaurya0501/spotify/IzsXSgDpXzJfPWGk/search?q=${keyword}&type=track`);
     let convertedData=await data.json();
     console.log(convertedData.tracks.items);
     setTracks(convertedData.tracks.items)
@@ -28,26 +29,24 @@ function App() {
       <span className="navbar-toggler-icon" />
     </button>
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-        <input
+        <input value={keyword} onChange={(event)=>{setKeyword(event.target.value)}}
           className="form-control me-2 w-75"
           type="search"
           placeholder="Search"
           aria-label="Search" 
         />
-        <button className="btn btn-outline-success" type="submit">
+        <button onClick={getTracks} className="btn btn-outline-success" type="submit">
           Search
         </button>
     </div>
   </div>
 </nav>
 <div className='col'> 
-      <button className='btn btn-primary' onClick={getTracks}>get Data</button>
       </div>
 <div className='container'>
   <div className='row'>
-  {
-  tracks.map((element, index) => {
-    return <div  key={element.album.id} className='col'>
+  {tracks.map((element, index) => {
+    return <div  key={element.album.id} className='col-lg-3 col-md-6 py-2'>
       <div className="card">
   <img src={element.album.images[0].url}  className="card-img-top" alt="..." />
   <div className="card-body">
