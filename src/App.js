@@ -1,105 +1,246 @@
-import { useState } from 'react';
-import './App.css';
-import Login from './Login'; // this file
+import React, { useState } from 'react';
+import Login from './Login'; // Import your Login component
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [keyword,setKeyword]=useState("");
-  const [tracks,setTracks]=useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [tracks, setTracks] = useState([]);
 
+  // Function to fetch tracks based on search keyword
+  const getTracks = async () => {
+    try {
+      const encodedKeyword = encodeURIComponent(keyword);
+      let response = await fetch(`https://v1.nocodeapi.com/shaurya0501/spotify/IzsXSgDpXzJfPWGk/search?q=${encodedKeyword}&type=track`);
+
+      if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        setTracks([]);
+        return;
+      }
+
+      let data = await response.json();
+
+      if (data && data.tracks && Array.isArray(data.tracks.items)) {
+        setTracks(data.tracks.items);
+      } else {
+        console.error("Unexpected API response structure:", data);
+        setTracks([]);
+      }
+    } catch (error) {
+      console.error("Error fetching tracks:", error);
+      setTracks([]);
+    }
+  };
+
+  // Show Login if not logged in
   if (!isLoggedIn) {
     return <Login onLogin={() => setIsLoggedIn(true)} />;
   }
 
-  const getTracks=async()=>{
-    try {
-      // Encode the keyword for safe URL usage
-      const encodedKeyword = encodeURIComponent(keyword);
-      let data = await fetch(`https://v1.nocodeapi.com/shaurya0501/spotify/IzsXSgDpXzJfPWGk/search?q=${encodedKeyword}&type=track`);
-
-      if (!data.ok) {
-        // Handle HTTP errors (e.g., 401, 403, 404, 500)
-        console.error(`HTTP error! status: ${data.status}`);
-        setTracks([]); // Clear tracks or set an error state
-        return;
-      }
-
-      let convertedData = await data.json();
-
-      // Check if convertedData and convertedData.tracks exist
-      if (convertedData && convertedData.tracks && Array.isArray(convertedData.tracks.items)) {
-        console.log(convertedData.tracks.items);
-        setTracks(convertedData.tracks.items);
-      } else {
-        console.error("API response structure is not as expected or 'items' is not an array:", convertedData);
-        setTracks([]); // Set tracks to an empty array to avoid rendering issues
-      }
-    } catch (error) {
-      console.error("Error fetching tracks:", error);
-      setTracks([]); // Clear tracks on error
-    }
-  };
-
   return (
     <>
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
-  <div className="container-fluid">
-    <a className="navbar-brand" href="#">
-      Saregama
-    </a>
-    <button
-      className="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span className="navbar-toggler-icon" />
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-        <input value={keyword} onChange={(event)=>{setKeyword(event.target.value)}}
-          className="form-control me-2 w-75"
-          type="search"
-          placeholder="Search"
-          aria-label="Search" 
-        />
-        <button onClick={getTracks} className="btn btn-outline-success" type="submit">
-          Search
-        </button>
-    </div>
-  </div>
-</nav>
-<div className='col'> 
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Chewy&family=Comfortaa:wght@300;400;700&display=swap');
+        body {
+          background: linear-gradient(135deg, #ffeef8 0%, #f0f8ff 50%, #f5fffa 100%);
+          min-height: 100vh;
+          font-family: 'Fredoka', sans-serif;
+          margin: 0;
+        }
+        .cute-navbar {
+          background: linear-gradient(135deg, rgba(255, 192, 203, 0.95) 0%, rgba(135, 206, 235, 0.9) 100%);
+          backdrop-filter: blur(15px);
+          border: none;
+          border-bottom: 3px solid rgba(255, 105, 180, 0.3);
+          box-shadow: 0 8px 25px rgba(255, 182, 193, 0.4);
+          padding: 1rem 0;
+        }
+        .cute-brand {
+          font-family: 'Chewy', cursive;
+          font-size: 2rem;
+          color: #ff1493;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+          text-decoration: none;
+          animation: bounce 2s ease-in-out infinite;
+        }
+        .cute-brand:hover {
+          color: #ff69b4;
+          text-decoration: none;
+        }
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-5px); }
+          60% { transform: translateY(-3px); }
+        }
+        .cute-search-input {
+          background: rgba(255, 255, 255, 0.9);
+          border: 2px solid rgba(255, 192, 203, 0.5);
+          border-radius: 25px;
+          padding: 0.75rem 1.5rem;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          outline: none;
+        }
+        .cute-search-input:focus {
+          background: rgba(255, 255, 255, 1);
+          border-color: #ff69b4;
+          box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+          transform: scale(1.02);
+        }
+        .cute-search-input::placeholder {
+          color: #999;
+          font-weight: 400;
+        }
+        .cute-search-btn {
+          background: linear-gradient(135deg, #ff69b4 0%, #87ceeb 100%);
+          border: none;
+          border-radius: 20px;
+          color: white;
+          padding: 0.75rem 1.5rem;
+          font-family: 'Fredoka', sans-serif;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+          margin-left: 0.5rem;
+        }
+        .cute-search-btn:hover {
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+          background: linear-gradient(135deg, #87ceeb 0%, #ff69b4 100%);
+        }
+        .cute-container {
+          padding: 2rem;
+          margin-top: 1rem;
+        }
+        .cute-card {
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid rgba(255, 192, 203, 0.3);
+          border-radius: 20px;
+          box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
+          transition: all 0.3s ease;
+          overflow: hidden;
+          margin-bottom: 2rem;
+          backdrop-filter: blur(10px);
+        }
+        .cute-card:hover {
+          transform: translateY(-8px) scale(1.03);
+          box-shadow: 0 15px 35px rgba(255, 182, 193, 0.5);
+          border-color: #ff69b4;
+        }
+        .cute-card-img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          transition: all 0.3s ease;
+        }
+        .cute-card:hover .cute-card-img {
+          transform: scale(1.1);
+        }
+        .cute-card-body {
+          padding: 1.5rem;
+        }
+        .cute-card-title {
+          font-family: 'Fredoka', sans-serif;
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: #ff1493;
+          margin-bottom: 0.8rem;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .cute-card-text {
+          font-family: 'Comfortaa', sans-serif;
+          font-size: 0.95rem;
+          color: #666;
+          margin-bottom: 0.5rem;
+          font-weight: 400;
+        }
+        .cute-audio {
+          width: 100%;
+          margin-top: 1rem;
+          border-radius: 10px;
+          accent-color: #ff69b4;
+        }
+        .cute-audio::-webkit-media-controls-panel {
+          background-color: rgba(255, 192, 203, 0.2);
+          border-radius: 10px;
+        }
+        .cute-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+          padding: 1rem 0;
+        }
+        @media (max-width: 768px) {
+          .cute-brand {
+            font-size: 1.5rem;
+          }
+          .cute-search-input {
+            margin-bottom: 0.5rem;
+          }
+          .cute-search-btn {
+            width: 100%;
+            margin-left: 0;
+          }
+          .cute-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
+      <nav className="navbar navbar-expand-lg cute-navbar">
+        <div className="container-fluid">
+          <a className="cute-brand" href="#">
+            🎵 Saregama 🎵
+          </a>
+          <div className="d-flex w-100 align-items-center">
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              className="cute-search-input me-2 flex-grow-1"
+              type="search"
+              placeholder="🎶 Search for your favorite songs..."
+              aria-label="Search"
+            />
+            <button onClick={getTracks} className="cute-search-btn" type="button">
+              ✨ Search ✨
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div className="cute-container">
+        <div className="cute-grid">
+          {tracks.map((track) => {
+            if (
+              !track.album ||
+              !track.album.images ||
+              !track.album.images[0] ||
+              !track.album.artists ||
+              !track.album.artists[0]
+            ) {
+              console.warn("Skipping malformed track:", track);
+              return null;
+            }
+            return (
+              <div key={track.album.id} className="cute-card">
+                <img
+                  src={track.album.images[0].url}
+                  className="cute-card-img"
+                  alt="Album cover"
+                />
+                <div className="cute-card-body">
+                  <h5 className="cute-card-title">{track.name}</h5>
+                  <p className="cute-card-text">🎤 Artist: {track.album.artists[0].name}</p>
+                  <p className="cute-card-text">📅 Release Date: {track.album.release_date}</p>
+                  <audio src={track.preview_url} controls className="cute-audio" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-<div className='container'>
-  <div className='row'>
-  {tracks.map((element) => { // Removed index as it's not strictly needed for key when element.album.id is unique
-    // Add a check for element.album and element.album.images[0] to prevent further errors if data is malformed
-    if (!element.album || !element.album.images || !element.album.images[0] || !element.album.artists || !element.album.artists[0]) {
-        console.warn("Skipping malformed track element:", element);
-        return null; // Skip rendering this element
-    }
-    return <div key={element.album.id} className='col-lg-3 col-md-6 py-2'>
-      <div className="card">
-  <img src={element.album.images[0].url}  className="card-img-top" alt="..." />
-  <div className="card-body">
-    <h5 className="card-title">{element.name}</h5>
-    <p className="card-text">
-      Artist:{element.album.artists[0].name}
-    </p>
-      <p className="card-text">
-      Release Date:{element.album.release_date}
-    </p>
-    <audio src={element.preview_url} controls className='w-100'></audio>
-  </div>
-</div>
-    </div>;
-  })
-}
-</div>
-</div>
     </>
   );
 }
