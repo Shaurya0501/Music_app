@@ -1,0 +1,81 @@
+.playlist-wrapper {
+  max-width: 500px;
+  margin: 30px auto;
+  background: #1e1e2f;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.playlist-input,
+.song-input {
+  width: 70%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 1em;
+}
+
+.add-song-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-btn {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.song-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.song-list li {
+  background: #333;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.song-list button {
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn {
+  background-color: #555;
+  color: white;
+}
